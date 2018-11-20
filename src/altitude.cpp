@@ -8,8 +8,8 @@
 
 namespace zestimation {
 
-  AltitudeEstimator::AltitudeEstimator(float sigmaAccel, float sigmaGyro, float sigmaBaro,
-                                       float ca, float accelThreshold)
+  TwoStepEstimator::TwoStepEstimator(float sigmaAccel, float sigmaGyro, float sigmaBaro,
+                                     float ca, float accelThreshold)
   :kalman(ca, sigmaGyro, sigmaAccel), complementary(sigmaAccel, sigmaBaro, accelThreshold)
   {
         this->sigmaAccel = sigmaAccel;
@@ -19,7 +19,7 @@ namespace zestimation {
         this->accelThreshold = accelThreshold;
   }
 
-  void AltitudeEstimator::estimate(float accel[3], float gyro[3], float baroHeight, uint32_t timestamp)
+  void TwoStepEstimator::estimate(float accel[3], float gyro[3], float baroHeight, uint32_t timestamp)
   {
           float deltat = (float)(timestamp-previousTime)/1000000.0f;
           float verticalAccel = kalman.estimate(pastGyro,
@@ -35,25 +35,33 @@ namespace zestimation {
           // update values for next iteration
           copyVector(pastGyro, gyro);
           copyVector(pastAccel, accel);
+          // Update delta altitude
+          _deltaAltitude = estimatedAltitude - pastAltitude;
           pastAltitude = estimatedAltitude;
           pastVerticalVelocity = estimatedVelocity;
           pastVerticalAccel = verticalAccel;
           previousTime = timestamp;
   }
 
-  float AltitudeEstimator::getAltitude()
+  float TwoStepEstimator::getDeltaAltitude()
+  {
+          // return the last estimated altitude
+          return _deltaAltitude;
+  }
+
+  float TwoStepEstimator::getAltitude()
   {
           // return the last estimated altitude
           return estimatedAltitude;
   }
 
-  float AltitudeEstimator::getVerticalVelocity()
+  float TwoStepEstimator::getVerticalVelocity()
   {
           // return the last estimated vertical velocity
           return estimatedVelocity;
   }
 
-  float AltitudeEstimator::getVerticalAcceleration()
+  float TwoStepEstimator::getVerticalAcceleration()
   {
           // return the last estimated vertical acceleration
           return pastVerticalAccel;

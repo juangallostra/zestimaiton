@@ -61,23 +61,6 @@ namespace zestimation {
       
       return ZHUpdate(compensatedAltitude);
   }
-  
-  float Rangefinder::altitudeCompensation(float q[4], float altitude)
-  {    
-      float euler0 = atan2(2.0f*(q[0]*q[1]+q[2]*q[3]),q[0]*q[0]-q[1]*q[1]-q[2]*q[2]+q[3]*q[3]);
-      float euler1 = asin(2.0f*(q[1]*q[3]-q[0]*q[2]));
-      
-      float compensatedAltitude = altitude * cos(euler0) * cos(euler1);
-      
-      return ZHUpdate(compensatedAltitude);
-  }
-  
-  float Rangefinder::altitudeCompensation(float altitude, float euler[3])
-  {          
-      float compensatedAltitude = altitude * cos(euler[0]) * cos(euler[1]);
-      
-      return ZHUpdate(compensatedAltitude);
-  }
 
   float Rangefinder::ZHUpdate(float compensatedAltitude)
   {
@@ -99,18 +82,6 @@ namespace zestimation {
   {
       _previousAlt = _alt;
       _alt = _lpf.update(Rangefinder::altitudeCompensation(accel, gyro, altitude));
-  }
-  
-  void Rangefinder::update(float quat[4], float altitude)
-  {
-      _previousAlt = _alt;
-      _alt = _lpf.update(Rangefinder::altitudeCompensation(quat, altitude));
-  }
-  
-  void Rangefinder::update(float altitude, float euler[3])
-  {
-      _previousAlt = _alt;
-      _alt = _lpf.update(Rangefinder::altitudeCompensation(altitude, euler));
   }
 
   float Rangefinder::getAltitude(void)

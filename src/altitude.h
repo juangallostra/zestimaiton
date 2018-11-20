@@ -11,7 +11,7 @@
 
 namespace zestimation {
 
-  class AltitudeEstimator {
+  class TwoStepEstimator {
 
     private:
       // required parameters for the filters used for the estimations
@@ -38,12 +38,13 @@ namespace zestimation {
       float pastAccel[3] = {0, 0, 0};
       // estimated altitude and vertical velocity
       float estimatedAltitude = 0;
+      float _deltaAltitude = 0;
       float estimatedVelocity = 0;
 
     public:
 
-      AltitudeEstimator(float sigmaAccel, float sigmaGyro, float sigmaBaro,
-                        float ca, float accelThreshold);
+      TwoStepEstimator(float sigmaAccel, float sigmaGyro, float sigmaBaro,
+                       float ca, float accelThreshold);
 
       void estimate(float accel[3], float gyro[3], float baroHeight, uint32_t timestamp);
 
@@ -52,6 +53,8 @@ namespace zestimation {
       float getVerticalVelocity();
 
       float getVerticalAcceleration();
+      
+      float getDeltaAltitude();
 
   }; // class AltitudeEstimator
 

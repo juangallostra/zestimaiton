@@ -61,7 +61,7 @@ zestimation::Barometer baro;
 
 
 // Altitude estimator
-static zestimation::AltitudeEstimator altitude = zestimation::AltitudeEstimator(
+static zestimation::TwoStepEstimator altitude = zestimation::TwoStepEstimator(
         0.0005, // sigma Accel
         0.0005, // sigma Gyro
         0.018,   // sigma Baro
