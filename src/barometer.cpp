@@ -50,9 +50,8 @@ namespace zestimation {
       _groundAltitude = decibarsToMeters(_groundPressure);
   }
 
-  bool Barometer::update(float pressure)
+  void Barometer::update(float pressure)
   {
-      bool calibrating = true;
       // Round pressure to 2 decimal places and
       // work with it as an int. We assume the rest
       // is noise
@@ -65,14 +64,11 @@ namespace zestimation {
         _iters += 1;
       }
       else {
-        calibrating = false;
         // update altitude estimation
         _previousAlt = _alt;
         float alt_tmp = decibarsToMeters(_pressure) - _groundAltitude;
         _alt = _alt * NOISE_LPF + (1 - NOISE_LPF) * alt_tmp;
-        //_alt = alt_tmp;
       }
-      return calibrating;
   }
 
   float Barometer::getAltitude(void)

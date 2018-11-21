@@ -50,7 +50,7 @@ namespace zestimation {
 
           void calibrate(float pressure);
 
-          bool update(float pressure);
+          void update(float pressure);
 
           float getAltitude(void);
         

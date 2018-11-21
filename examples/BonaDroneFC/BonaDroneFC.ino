@@ -65,7 +65,7 @@ static zestimation::AltitudeEstimator altitude = zestimation::AltitudeEstimator(
         20.0,   // gain
         0.0005, // sigma Accel
         0.0005, // sigma Gyro
-        0.018,  // sigma Baro
+        0.05,  // sigma Baro
         0.5,    // ca
         0.1);   // accelThreshold
 
@@ -109,11 +109,11 @@ void loop(void)
     float gyroData[3];
     imuRead(gyroData, accelData);
     altitude.estimate(accelData, gyroData, rangeHeight, pressure, timestamp);
-    //Serial.print(baroHeight);
-    //Serial.print(",");
+    Serial.print(altitude.twoStep.getAltitude());
+    Serial.print(",");
+    Serial.print(altitude.range.getAltitude());
+    Serial.print(",");
     Serial.println(altitude.getAltitude());
-    //Serial.print(",");
-    //Serial.print(altitude.getVerticalVelocity());
     //Serial.print(",");
     //Serial.println(altitude.getVerticalAcceleration());
     pastTime = currentTime;
