@@ -17,10 +17,13 @@ namespace zestimation {
         this->sigmaBaro = sigmaBaro;
         this->ca = ca;
         this->accelThreshold = accelThreshold;
+        baro.init();
   }
 
-  void TwoStepEstimator::estimate(float accel[3], float gyro[3], float baroHeight, uint32_t timestamp)
+  void TwoStepEstimator::estimate(float accel[3], float gyro[3], float pressure, uint32_t timestamp)
   {
+          baro.update(pressure);
+          float baroHeight = baro.getAltitude();
           float deltat = (float)(timestamp-previousTime)/1000000.0f;
           float verticalAccel = kalman.estimate(pastGyro,
                                                 pastAccel,

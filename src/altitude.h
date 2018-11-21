@@ -6,6 +6,7 @@
 
 #include "filters.h"
 #include "algebra.h"
+#include "barometer.h"
 
 #include <Arduino.h> // XXX For micros; eventually need to compute micros() elsewhere
 
@@ -30,6 +31,7 @@ namespace zestimation {
       // required filters for altitude and vertical velocity estimation
       KalmanFilter kalman;
       ComplementaryFilter complementary;
+      Barometer baro;
       // Estimated past vertical acceleration
       float pastVerticalAccel = 0;
       float pastVerticalVelocity = 0;
@@ -46,7 +48,7 @@ namespace zestimation {
       TwoStepEstimator(float sigmaAccel, float sigmaGyro, float sigmaBaro,
                        float ca, float accelThreshold);
 
-      void estimate(float accel[3], float gyro[3], float baroHeight, uint32_t timestamp);
+      void estimate(float accel[3], float gyro[3], float pressure, uint32_t timestamp);
 
       float getAltitude();
 

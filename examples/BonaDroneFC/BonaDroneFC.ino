@@ -9,11 +9,10 @@
 #include <LSM6DSM.h>
 // Barometer
 #include <LPS22HB.h>
-#include "barometer.h"
 // Rangefinder
 #include <VL53L1X.h>
 // estimator
-#include "altitude.h"
+#include "zestimation.h"
 
 uint8_t LED_PIN = 38;
 // --- IMU related variables and functions ---
@@ -57,11 +56,14 @@ static void imuRead(float gyro[3], float accel[3])
 // Pressure and temperature oversample rate
 static LPS22HB::Rate_t ODR = LPS22HB::P_75Hz;     
 static LPS22HB lps22hb = LPS22HB(ODR);
-zestimation::Barometer baro;
+//zestimation::Barometer baro;
 
+// --- Rangefinder related variables and functions ---
+static VL53L1X distanceSensor;
 
 // Altitude estimator
-static zestimation::TwoStepEstimator altitude = zestimation::TwoStepEstimator(
+static zestimation::AltitudeEstimator altitude = zestimation::AltitudeEstimator(
+        20.0,   // gain
         0.0005, // sigma Accel
         0.0005, // sigma Gyro
         0.018,   // sigma Baro
@@ -83,11 +85,17 @@ void setup(void)
     lsm6dsm.begin();
     lsm6dsm.calibrate(GYRO_BIAS, ACCEL_BIAS);
     lps22hb.begin();
-    baro.init();
+    if (distanceSensor.begin() == false) {
+        while (true) {
+            Serial.println("Sensor offline!");
+            delay(200);
+        }
+    }
+    //baro.init();
     // Begin serial comms
     Serial.begin(115200);
     // Set up the interrupt pin, it's set as active high, push-pull
-
+    digitalWrite(LED_PIN, HIGH);
 }
 
 void loop(void)
@@ -95,22 +103,23 @@ void loop(void)
   currentTime = millis();
   if ((currentTime - pastTime) > 50)
   {
+    uint32_t timestamp = micros();
     // get all necessary data
     float pressure = lps22hb.readPressure();
-    baro.update(pressure);
-    float baroHeight = baro.getAltitude();
-    uint32_t timestamp = micros();
+    float rangeHeight = (float)distanceSensor.getDistance() / 1000.0f;
+    //baro.update(pressure);
+    //float baroHeight = baro.getAltitude();
     float accelData[3];
     float gyroData[3];
     imuRead(gyroData, accelData);
-    altitude.estimate(accelData, gyroData, baroHeight, timestamp);
-    Serial.print(baroHeight);
-    Serial.print(",");
-    Serial.print(altitude.getAltitude());
-    Serial.print(",");
-    Serial.print(altitude.getVerticalVelocity());
-    Serial.print(",");
-    Serial.println(altitude.getVerticalAcceleration());
+    altitude.estimate(accelData, gyroData, rangeHeight, pressure, timestamp);
+    //Serial.print(baroHeight);
+    //Serial.print(",");
+    Serial.println(altitude.getAltitude());
+    //Serial.print(",");
+    //Serial.print(altitude.getVerticalVelocity());
+    //Serial.print(",");
+    //Serial.println(altitude.getVerticalAcceleration());
     pastTime = currentTime;
   }
 }
