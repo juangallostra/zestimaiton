@@ -16,7 +16,7 @@
 
 uint8_t LED_PIN = 38;
 // --- IMU related variables and functions ---
-// LSM6DSM full-scale settings
+// LSM6DSM settings
 static const LSM6DSM::Ascale_t Ascale = LSM6DSM::AFS_2G;
 static const LSM6DSM::Gscale_t Gscale = LSM6DSM::GFS_2000DPS;
 static const LSM6DSM::Rate_t   AODR   = LSM6DSM::ODR_1660Hz;
@@ -56,7 +56,6 @@ static void imuRead(float gyro[3], float accel[3])
 // Pressure and temperature oversample rate
 static LPS22HB::Rate_t ODR = LPS22HB::P_75Hz;     
 static LPS22HB lps22hb = LPS22HB(ODR);
-//zestimation::Barometer baro;
 
 // --- Rangefinder related variables and functions ---
 static VL53L1X distanceSensor;
@@ -66,9 +65,9 @@ static zestimation::AltitudeEstimator altitude = zestimation::AltitudeEstimator(
         20.0,   // gain
         0.0005, // sigma Accel
         0.0005, // sigma Gyro
-        0.018,   // sigma Baro
-        0.5, // ca
-        0.1);// accelThreshold
+        0.018,  // sigma Baro
+        0.5,    // ca
+        0.1);   // accelThreshold
 
 float pastTime = millis();
 float currentTime = millis();
@@ -91,7 +90,6 @@ void setup(void)
             delay(200);
         }
     }
-    //baro.init();
     // Begin serial comms
     Serial.begin(115200);
     // Set up the interrupt pin, it's set as active high, push-pull
@@ -107,8 +105,6 @@ void loop(void)
     // get all necessary data
     float pressure = lps22hb.readPressure();
     float rangeHeight = (float)distanceSensor.getDistance() / 1000.0f;
-    //baro.update(pressure);
-    //float baroHeight = baro.getAltitude();
     float accelData[3];
     float gyroData[3];
     imuRead(gyroData, accelData);
