@@ -4,7 +4,7 @@
 
 #include "filters.h"
 #include "algebra.h"
-#include "altitude.h"
+#include "twostep.h"
 
 namespace zestimation {
 

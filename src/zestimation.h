@@ -19,7 +19,7 @@
 
 # pragma once
 
-#include "altitude.h"
+#include "twostep.h"
 #include "rangefinder.h"
 
 #include <Arduino.h>
