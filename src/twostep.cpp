@@ -1,5 +1,5 @@
 /*
-    altitude.cpp: Altitude estimation via barometer/accelerometer fusion
+    twostep.cpp: Altitude estimation via barometer/accelerometer fusion
 */
 
 #include "filters.h"

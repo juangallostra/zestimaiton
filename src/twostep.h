@@ -1,12 +1,12 @@
 /*
-    altitude.h: Altitude estimation via barometer/accelerometer fusion
+    twostep.h: Altitude estimation via barometer/accelerometer fusion
 */
 
 # pragma once
 
 #include "filters.h"
 #include "algebra.h"
-#include "barometer.h"
+#include "sensors/barometer.h"
 
 #include <Arduino.h> // XXX For micros; eventually need to compute micros() elsewhere
 

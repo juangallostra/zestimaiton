@@ -1,5 +1,5 @@
 /* 
-   estimator.h: Declarations of the estimator class and its methods
+   zestimation.h: Declarations of the estimator class and its methods
 
    Copyright (c) 2018 Juan Gallostra
 
@@ -20,7 +20,7 @@
 # pragma once
 
 #include "twostep.h"
-#include "rangefinder.h"
+#include "sensors/rangefinder.h"
 
 #include <Arduino.h>
 

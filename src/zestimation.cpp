@@ -1,5 +1,5 @@
 /* 
-   estimator.cpp: Definitons of the estimator class' methods
+   zestimation.cpp: Definitons of the estimator class' methods
 
    Copyright (c) 2018 Juan Gallostra
 
